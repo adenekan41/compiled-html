@@ -1,0 +1,30 @@
+{
+	"name": "compiled-html",
+	"description": "A payment platform by techadvance",
+	"version": "1.0.0",
+	"main": "gulpfile.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"flush": "rm -rf dist",
+		"start": "gulp"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/adenekan41/compiled-html.git"
+	},
+	"author": "Adenekan Wonderful",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/adenekan41/compiled-html/issues"
+	},
+	"homepage": "hhttps://github.com/adenekan41/compiled-html#readme",
+	"devDependencies": {
+		"gulp": "^4.0.2",
+		"gulp-concat": "^2.6.1",
+		"gulp-connect": "^5.7.0",
+		"gulp-file-include": "^2.1.1",
+		"gulp-sass": "^4.0.2",
+		"gulp-uglify": "^3.0.2",
+		"gulp-util": "^3.0.8"
+	}
+}
