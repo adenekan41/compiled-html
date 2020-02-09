@@ -6,12 +6,6 @@ let fileinclude = require('gulp-file-include');
 let sass = require('gulp-sass');
 let uglify = require('gulp-uglify'),
 	concat = require('gulp-concat');
-let allSources = [
-	'src/*.html',
-	'src/styles/*.scss',
-	'src/scripts/*.js',
-	'src/components/*.html',
-];
 /**
  * Generate a copy file for every html files
  * @param []

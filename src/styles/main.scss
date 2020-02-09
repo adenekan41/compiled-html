@@ -4,7 +4,7 @@ $primary-color: blue;
 	color: $primary-color;
 }
 .row {
-	height: 96vh;
+	min-height: 96vh;
 }
 h1 {
 	text-align: center;
