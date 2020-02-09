@@ -1,5 +1,5 @@
 const gulp = require('gulp'),
-	uglify = require('gulp-uglify'),
+	uglify = require('gulp-uglify-es').default,
 	imagemin = require('gulp-imagemin'),
 	jsImport = require('gulp-js-import'),
 	sass = require('gulp-sass'),
@@ -45,12 +45,11 @@ gulp.task('sass', async () => {
 				style: 'expanded',
 			})
 		)
-		.on('change', () => {
-			gulp.src('dest').pipe(connect.reload());
+		.on('error', function (err) {
+			gutil.log(gutil.colors.red('[Error]'), err.toString());
 		})
 		.pipe(
-			cleanCSS(
-				{
+			cleanCSS({
 					compatibility: 'ie8',
 					debug: true,
 				},
@@ -64,6 +63,9 @@ gulp.task('sass', async () => {
 				}
 			)
 		)
+		.on('error', function (err) {
+			gutil.log(gutil.colors.red('[Error]'), err.toString());
+		})
 		.pipe(gulp.dest('dist/styles'))
 		.pipe(connect.reload());
 });
@@ -75,26 +77,13 @@ gulp.task('sass', async () => {
  * @argument String
  */
 gulp.task('watch', async () => {
-	await gulp.watch('src/scripts/**/*.js', gulp.series('js'));
+	await gulp.watch('src/scripts/**/*.js', gulp.series('js-compile'));
 	await gulp.watch('src/styles/**/*.scss', gulp.series('sass'));
 	await gulp.watch(
 		['src/*.html', 'src/components/**/*.html'],
-		gulp.parallel('html', 'fileinclude', 'test')
+		gulp.parallel('html-compile', 'test')
 	);
 	await gulp.watch('src/assets/*', gulp.parallel('assets'));
-});
-
-/**
- * Generate a copy file for every html files
- * @param []
- * @function [html]
- * @argument String
- */
-gulp.task('html', async () => {
-	await gulp
-		.src('src/*.html')
-		.pipe(gulp.dest('dist'))
-		.pipe(connect.reload());
 });
 
 /**
@@ -111,13 +100,14 @@ gulp.task('assets', async () => {
 				interlaced: true,
 				progressive: true,
 				optimizationLevel: 5,
-				svgoPlugins: [
-					{
-						removeViewBox: true,
-					},
-				],
+				svgoPlugins: [{
+					removeViewBox: true,
+				}, ],
 			})
 		)
+		.on('error', function (err) {
+			gutil.log(gutil.colors.red('[Error]'), err.toString());
+		})
 		.pipe(gulp.dest('dist/assets'))
 		.pipe(connect.reload());
 });
@@ -128,7 +118,7 @@ gulp.task('assets', async () => {
  * @function [fileinclude]
  * @argument ()
  */
-gulp.task('fileinclude', async () => {
+gulp.task('html-compile', async () => {
 	await gulp
 		.src(['src/*.html'])
 		.pipe(
@@ -160,7 +150,7 @@ gulp.task('connect', async () => {
  * @param []
  * @function [test]
  */
-gulp.task('test', async function() {
+gulp.task('test', async function () {
 	await gulp
 		.src(['src/*.html', 'src/components/**/*.html'])
 		.pipe(
@@ -168,6 +158,9 @@ gulp.task('test', async function() {
 				force: true,
 			})
 		)
+		.on('error', function (err) {
+			gutil.log(gutil.colors.red('[Error]'), err.toString());
+		})
 		.on('error', console.log)
 		.pipe(connect.reload());
 });
@@ -176,7 +169,7 @@ gulp.task('test', async function() {
  * @param []
  * @function [js]
  */
-gulp.task('js', async function() {
+gulp.task('js-compile', async function () {
 	await gulp
 		.src('src/scripts/*.js')
 		.pipe(
@@ -186,6 +179,9 @@ gulp.task('js', async function() {
 			})
 		)
 		.pipe(uglify())
+		.on('error', function (err) {
+			gutil.log(gutil.colors.red('[Error]'), err.toString());
+		})
 		.pipe(gulp.dest('dist/scripts'))
 		.pipe(connect.reload());
 });
@@ -194,9 +190,8 @@ gulp.task(
 	'default',
 	gulp.parallel(
 		'log',
-		'html',
-		'js',
-		'fileinclude',
+		'html-compile',
+		'js-compile',
 		'assets',
 		'sass',
 		'test',
