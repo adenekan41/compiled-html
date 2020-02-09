@@ -1,12 +1,15 @@
 {
 	"name": "compiled-html",
-	"description": "A payment platform by techadvance",
+	"description": "compile html with gulp",
 	"version": "1.0.0",
 	"main": "gulpfile.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"flush": "rm -rf dist",
-		"start": "gulp"
+		"start": "gulp",
+		"copy": "gulp copy",
+		"connect": "gulp connect",
+		"watch": "gulp watch"
 	},
 	"repository": {
 		"type": "git",

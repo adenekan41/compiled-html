@@ -3,7 +3,9 @@ $primary-color: blue;
 #title {
 	color: $primary-color;
 }
-
+.row {
+	height: 96vh;
+}
 h1 {
 	text-align: center;
 }
