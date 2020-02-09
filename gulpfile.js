@@ -4,6 +4,7 @@ const gutil = require('gulp-util');
 const cleanCSS = require('gulp-clean-css');
 const fileinclude = require('gulp-file-include');
 const sass = require('gulp-sass');
+const imagemin = require('gulp-imagemin');
 const uglify = require('gulp-uglify'),
 	concat = require('gulp-concat');
 
@@ -48,8 +49,12 @@ gulp.task('sass', async () => {
 		})
 		.pipe(
 			cleanCSS({ compatibility: 'ie8', debug: true }, details => {
-				console.log(`${details.name}: ${details.stats.originalSize}`);
-				console.log(`${details.name}: ${details.stats.minifiedSize}`);
+				console.log(
+					`=== Original Size === ${details.name}: ${details.stats.originalSize} B`
+				);
+				console.log(
+					`=== Minified Size === ${details.name}: ${details.stats.minifiedSize} B`
+				);
 			})
 		)
 		.pipe(gulp.dest('dist/styles'))
@@ -84,6 +89,7 @@ gulp.task('watch', async () => {
 		['src/*.html', 'src/components/**/*.html'],
 		gulp.parallel('html', 'fileinclude')
 	);
+	await gulp.watch('src/assets/*', gulp.parallel('assets'));
 });
 
 /**
@@ -96,6 +102,31 @@ gulp.task('html', async () => {
 	await gulp
 		.src('src/*.html')
 		.pipe(gulp.dest('dist'))
+		.pipe(connect.reload());
+});
+
+/**
+ * Generate a copy file for every html files
+ * @param []
+ * @function [assets]
+ * @argument String
+ */
+gulp.task('assets', async () => {
+	await gulp
+		.src('src/assets/*')
+		.pipe(
+			imagemin({
+				interlaced: true,
+				progressive: true,
+				optimizationLevel: 5,
+				svgoPlugins: [
+					{
+						removeViewBox: true,
+					},
+				],
+			})
+		)
+		.pipe(gulp.dest('dist/assets'))
 		.pipe(connect.reload());
 });
 /**
@@ -129,5 +160,14 @@ gulp.task('connect', async () => {
 //start tasks at once
 gulp.task(
 	'default',
-	gulp.parallel('log', 'html', 'fileinclude', 'js', 'sass', 'connect', 'watch')
+	gulp.parallel(
+		'log',
+		'html',
+		'fileinclude',
+		'js',
+		'assets',
+		'sass',
+		'connect',
+		'watch'
+	)
 );
