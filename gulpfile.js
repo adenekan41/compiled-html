@@ -25,7 +25,7 @@ gulp.task('copy', async () => {
  */
 
 gulp.task('log', async () => {
-	await gutil.log('== My Log Task ==');
+	await gutil.log(`== Project Started ==`);
 });
 
 /**
@@ -122,5 +122,5 @@ gulp.task('connect', async () => {
 //start tasks at once
 gulp.task(
 	'default',
-	gulp.parallel('connect', 'html', 'js', 'sass', 'fileinclude', 'watch')
+	gulp.parallel('log', 'connect', 'html', 'js', 'sass', 'fileinclude', 'watch')
 );
