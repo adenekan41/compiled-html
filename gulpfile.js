@@ -1,13 +1,13 @@
-const gulp = require('gulp');
-const connect = require('gulp-connect');
-const gutil = require('gulp-util');
-const access = require('gulp-accessibility');
-const cleanCSS = require('gulp-clean-css');
-const fileinclude = require('gulp-file-include');
-const sass = require('gulp-sass');
-const imagemin = require('gulp-imagemin');
-const uglify = require('gulp-uglify'),
-	concat = require('gulp-concat');
+const gulp = require('gulp'),
+	uglify = require('gulp-uglify'),
+	imagemin = require('gulp-imagemin'),
+	jsImport = require('gulp-js-import'),
+	sass = require('gulp-sass'),
+	fileinclude = require('gulp-file-include'),
+	cleanCSS = require('gulp-clean-css'),
+	access = require('gulp-accessibility'),
+	gutil = require('gulp-util'),
+	connect = require('gulp-connect');
 
 /**
  * Generate a copy file for every html files
@@ -69,22 +69,7 @@ gulp.task('sass', async () => {
 });
 
 /**
- * Generate a copy file for every html files
- * @param []
- * @function [js]
- * @argument String
- */
-gulp.task('js', async () => {
-	await gulp
-		.src('src/scripts/*.js')
-		.pipe(uglify())
-		.pipe(concat('script.js'))
-		.pipe(gulp.dest('dist/scripts'))
-		.pipe(connect.reload());
-});
-
-/**
- * Generate a copy file for every html files
+ * watchs for file changes
  * @param []
  * @function [watch]
  * @argument String
@@ -113,7 +98,7 @@ gulp.task('html', async () => {
 });
 
 /**
- * Generate a copy file for every html files
+ * Generate a minified files for every of our assests
  * @param []
  * @function [assets]
  * @argument String
@@ -136,11 +121,12 @@ gulp.task('assets', async () => {
 		.pipe(gulp.dest('dist/assets'))
 		.pipe(connect.reload());
 });
+
 /**
- * Generate a copy file for every html files
+ * allows files including in our HTML ( component templating )
  * @param []
- * @function [html]
- * @argument String
+ * @function [fileinclude]
+ * @argument ()
  */
 gulp.task('fileinclude', async () => {
 	await gulp
@@ -155,6 +141,11 @@ gulp.task('fileinclude', async () => {
 		.pipe(connect.reload());
 });
 
+/**
+ * starts the server on :3200
+ * @param []
+ * @function [connect]
+ */
 gulp.task('connect', async () => {
 	await connect.server({
 		root: 'dist',
@@ -164,8 +155,13 @@ gulp.task('connect', async () => {
 	});
 });
 
-gulp.task('test', function() {
-	return gulp
+/**
+ * Runs all the HTML file on an accessbility module
+ * @param []
+ * @function [test]
+ */
+gulp.task('test', async function() {
+	await gulp
 		.src(['src/*.html', 'src/components/**/*.html'])
 		.pipe(
 			access({
@@ -175,14 +171,32 @@ gulp.task('test', function() {
 		.on('error', console.log)
 		.pipe(connect.reload());
 });
+/**
+ * Enables JS importing in our files
+ * @param []
+ * @function [js]
+ */
+gulp.task('js', async function() {
+	await gulp
+		.src('src/scripts/*.js')
+		.pipe(
+			jsImport({
+				hideConsole: true,
+				importStack: true,
+			})
+		)
+		.pipe(uglify())
+		.pipe(gulp.dest('dist/scripts'))
+		.pipe(connect.reload());
+});
 //start tasks at once
 gulp.task(
 	'default',
 	gulp.parallel(
 		'log',
 		'html',
-		'fileinclude',
 		'js',
+		'fileinclude',
 		'assets',
 		'sass',
 		'test',
