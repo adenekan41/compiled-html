@@ -13,7 +13,7 @@ const uglify = require('gulp-uglify'),
  * @argument String
  */
 
-gulp.task('copy', async function () {
+gulp.task('copy', async () => {
 	await gulp.src('src/*.html').pipe(gulp.dest('dist'));
 });
 
@@ -24,7 +24,7 @@ gulp.task('copy', async function () {
  * @argument String
  */
 
-gulp.task('log', async function () {
+gulp.task('log', async () => {
 	await gutil.log('== My Log Task ==');
 });
 
@@ -34,7 +34,7 @@ gulp.task('log', async function () {
  * @function [sass]
  * @argument String
  */
-gulp.task('sass', async function () {
+gulp.task('sass', async () => {
 	await gulp
 		.src('src/styles/*.scss')
 		.pipe(
@@ -42,7 +42,7 @@ gulp.task('sass', async function () {
 				style: 'expanded',
 			})
 		)
-		.on('change', function () {
+		.on('change', () => {
 			gulp.src('dest').pipe(connect.reload());
 		})
 		.pipe(gulp.dest('dist/css'))
@@ -55,7 +55,7 @@ gulp.task('sass', async function () {
  * @function [js]
  * @argument String
  */
-gulp.task('js', async function () {
+gulp.task('js', async () => {
 	await gulp
 		.src('src/scripts/*.js')
 		.pipe(uglify())
@@ -70,7 +70,7 @@ gulp.task('js', async function () {
  * @function [watch]
  * @argument String
  */
-gulp.task('watch', async function () {
+gulp.task('watch', async () => {
 	await gulp.watch('src/scripts/*.js', gulp.series('js'));
 	await gulp.watch('src/styles/*.scss', gulp.series('sass'));
 	await gulp.watch(
@@ -85,7 +85,7 @@ gulp.task('watch', async function () {
  * @function [html]
  * @argument String
  */
-gulp.task('html', async function () {
+gulp.task('html', async () => {
 	await gulp
 		.src('src/*.html')
 		.pipe(gulp.dest('dist'))
@@ -97,7 +97,7 @@ gulp.task('html', async function () {
  * @function [html]
  * @argument String
  */
-gulp.task('fileinclude', async function () {
+gulp.task('fileinclude', async () => {
 	await gulp
 		.src(['src/*.html'])
 		.pipe(
@@ -110,7 +110,7 @@ gulp.task('fileinclude', async function () {
 		.pipe(connect.reload());
 });
 
-gulp.task('connect', async function () {
+gulp.task('connect', async () => {
 	await connect.server({
 		root: 'dist',
 		port: 3200,
