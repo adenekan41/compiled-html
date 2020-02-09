@@ -83,6 +83,7 @@ $ npm run copy #copies any html code in working directory to build directory
 $ npm run flush #delets cached compile by gulp
 $ npm run watch #watchs files and updates
 $ npm run connect #starts server without running gulp default
+$ npm run deploy #deploys to surge automatically
 ```
 
 > MIT © [codewonders.dev](https://codewonders.dev) &nbsp;&middot;&nbsp; GitHub

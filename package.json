@@ -9,7 +9,8 @@
 		"start": "gulp",
 		"copy": "gulp copy",
 		"connect": "gulp connect",
-		"watch": "gulp watch"
+		"watch": "gulp watch",
+		"deploy": "surge dist/"
 	},
 	"repository": {
 		"type": "git",
