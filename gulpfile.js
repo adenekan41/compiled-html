@@ -45,7 +45,7 @@ gulp.task('sass', async () => {
 		.on('change', () => {
 			gulp.src('dest').pipe(connect.reload());
 		})
-		.pipe(gulp.dest('dist/css'))
+		.pipe(gulp.dest('dist/styles'))
 		.pipe(connect.reload());
 });
 
@@ -60,7 +60,7 @@ gulp.task('js', async () => {
 		.src('src/scripts/*.js')
 		.pipe(uglify())
 		.pipe(concat('script.js'))
-		.pipe(gulp.dest('dist/js'))
+		.pipe(gulp.dest('dist/scripts'))
 		.pipe(connect.reload());
 });
 
