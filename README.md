@@ -6,6 +6,16 @@
 
 A Starter project to make writing html really simple and easy powered by gulp.
 
+### ⚡️ Live Reload
+
+### 🔥 Component Based
+
+### 📝 Raw HTML
+
+### ✅ SCSS supported
+
+### 🚀 Deploy With Surge
+
 ## Helper Functions
 
 > Still in progress coming up with useful helper by gulp-file-include and some other useful compilers
@@ -15,7 +25,7 @@ A Starter project to make writing html really simple and easy powered by gulp.
 ```sh
 $ git clone https://github.com/adenekan41/compiled-html
 $ npm install
-$ npm run start
+$ npm run start #check localhost:3000 to see project run
 ```
 
 ## Usage
