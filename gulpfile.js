@@ -1,6 +1,7 @@
 const gulp = require ('gulp');
 const connect = require ('gulp-connect');
 const gutil = require ('gulp-util');
+const cleanCSS = require ('gulp-clean-css');
 const fileinclude = require ('gulp-file-include');
 const sass = require ('gulp-sass');
 const uglify = require ('gulp-uglify'), concat = require ('gulp-concat');
@@ -44,6 +45,12 @@ gulp.task ('sass', async () => {
     .on ('change', () => {
       gulp.src ('dest').pipe (connect.reload ());
     })
+    .pipe (
+      cleanCSS ({compatibility: 'ie8', debug: true}, details => {
+        console.log (`${details.name}: ${details.stats.originalSize}`);
+        console.log (`${details.name}: ${details.stats.minifiedSize}`);
+      })
+    )
     .pipe (gulp.dest ('dist/styles'))
     .pipe (connect.reload ());
 });
