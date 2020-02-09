@@ -2,7 +2,7 @@
 
 # Compiled-HTML
 
-### [see demo](https://github.com/adenekan41/compiled-html)
+### [see demo](http://compiled-html.surge.sh/)
 
 A Starter project to make writing html really simple and easy powered by gulp.
 
