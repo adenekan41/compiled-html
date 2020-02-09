@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 const connect = require('gulp-connect');
 const gutil = require('gulp-util');
+const access = require('gulp-accessibility');
 const cleanCSS = require('gulp-clean-css');
 const fileinclude = require('gulp-file-include');
 const sass = require('gulp-sass');
@@ -48,14 +49,20 @@ gulp.task('sass', async () => {
 			gulp.src('dest').pipe(connect.reload());
 		})
 		.pipe(
-			cleanCSS({ compatibility: 'ie8', debug: true }, details => {
-				console.log(
-					`=== Original Size === ${details.name}: ${details.stats.originalSize} B`
-				);
-				console.log(
-					`=== Minified Size === ${details.name}: ${details.stats.minifiedSize} B`
-				);
-			})
+			cleanCSS(
+				{
+					compatibility: 'ie8',
+					debug: true,
+				},
+				details => {
+					console.log(
+						`=== Original Size === ${details.name}: ${details.stats.originalSize} B`
+					);
+					console.log(
+						`=== Minified Size === ${details.name}: ${details.stats.minifiedSize} B`
+					);
+				}
+			)
 		)
 		.pipe(gulp.dest('dist/styles'))
 		.pipe(connect.reload());
@@ -87,7 +94,7 @@ gulp.task('watch', async () => {
 	await gulp.watch('src/styles/**/*.scss', gulp.series('sass'));
 	await gulp.watch(
 		['src/*.html', 'src/components/**/*.html'],
-		gulp.parallel('html', 'fileinclude')
+		gulp.parallel('html', 'fileinclude', 'test')
 	);
 	await gulp.watch('src/assets/*', gulp.parallel('assets'));
 });
@@ -157,6 +164,17 @@ gulp.task('connect', async () => {
 	});
 });
 
+gulp.task('test', function() {
+	return gulp
+		.src(['src/*.html', 'src/components/**/*.html'])
+		.pipe(
+			access({
+				force: true,
+			})
+		)
+		.on('error', console.log)
+		.pipe(connect.reload());
+});
 //start tasks at once
 gulp.task(
 	'default',
@@ -167,6 +185,7 @@ gulp.task(
 		'js',
 		'assets',
 		'sass',
+		'test',
 		'connect',
 		'watch'
 	)

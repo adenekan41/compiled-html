@@ -42,7 +42,7 @@ Getting familiar with the template and you want to use some helper functions in 
 		@include('./components/head.html', {"title": "Dashboard"})
 	</head>
 	<body>
-		@@include('./components/view.html')
+		@include('./components/view.html')
 	</body>
 </html>
 ```

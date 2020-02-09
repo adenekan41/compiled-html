@@ -2,5 +2,6 @@ dist
 .tmp 
 node_modules
 package-lock.json 
+yarn.lock
 .sass-cache 
 bower_components 
