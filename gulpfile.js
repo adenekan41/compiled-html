@@ -2,9 +2,11 @@ const gulp = require('gulp'),
 	uglify = require('gulp-uglify-es').default,
 	imagemin = require('gulp-imagemin'),
 	jsImport = require('gulp-js-import'),
+	rename = require('gulp-rename'),
 	sass = require('gulp-sass'),
 	fileinclude = require('gulp-file-include'),
 	cleanCSS = require('gulp-clean-css'),
+	beautify = require('gulp-beautify'),
 	access = require('gulp-accessibility'),
 	gutil = require('gulp-util'),
 	connect = require('gulp-connect');
@@ -45,11 +47,12 @@ gulp.task('sass', async () => {
 				style: 'expanded',
 			})
 		)
-		.on('error', function (err) {
+		.on('error', function(err) {
 			gutil.log(gutil.colors.red('[Error]'), err.toString());
 		})
 		.pipe(
-			cleanCSS({
+			cleanCSS(
+				{
 					compatibility: 'ie8',
 					debug: true,
 				},
@@ -63,7 +66,7 @@ gulp.task('sass', async () => {
 				}
 			)
 		)
-		.on('error', function (err) {
+		.on('error', function(err) {
 			gutil.log(gutil.colors.red('[Error]'), err.toString());
 		})
 		.pipe(gulp.dest('dist/styles'))
@@ -80,7 +83,12 @@ gulp.task('watch', async () => {
 	await gulp.watch('src/scripts/**/*.js', gulp.series('js-compile'));
 	await gulp.watch('src/styles/**/*.scss', gulp.series('sass'));
 	await gulp.watch(
-		['src/*.html', 'src/components/**/*.html'],
+		[
+			'src/*.html',
+			'src/*.cw',
+			'src/components/**/*.html',
+			'src/components/**/*.cw',
+		],
 		gulp.parallel('html-compile', 'test')
 	);
 	await gulp.watch('src/assets/*', gulp.parallel('assets'));
@@ -100,12 +108,14 @@ gulp.task('assets', async () => {
 				interlaced: true,
 				progressive: true,
 				optimizationLevel: 5,
-				svgoPlugins: [{
-					removeViewBox: true,
-				}, ],
+				svgoPlugins: [
+					{
+						removeViewBox: true,
+					},
+				],
 			})
 		)
-		.on('error', function (err) {
+		.on('error', function(err) {
 			gutil.log(gutil.colors.red('[Error]'), err.toString());
 		})
 		.pipe(gulp.dest('dist/assets'))
@@ -120,11 +130,26 @@ gulp.task('assets', async () => {
  */
 gulp.task('html-compile', async () => {
 	await gulp
-		.src(['src/*.html'])
+		.src(['src/*.html', 'src/*.cw'])
+		.pipe(
+			rename(function(path) {
+				// Returns a completely new object, make sure you return all keys needed!
+				return {
+					dirname: path.dirname,
+					basename: path.basename,
+					extname: '.html',
+				};
+			})
+		)
 		.pipe(
 			fileinclude({
 				prefix: '@',
 				basepath: '@file',
+			})
+		)
+		.pipe(
+			beautify.html({
+				indent_size: 2,
 			})
 		)
 		.pipe(gulp.dest('dist'))
@@ -150,15 +175,20 @@ gulp.task('connect', async () => {
  * @param []
  * @function [test]
  */
-gulp.task('test', async function () {
+gulp.task('test', async function() {
 	await gulp
-		.src(['src/*.html', 'src/components/**/*.html'])
+		.src([
+			'src/*.html',
+			'src/*.cw',
+			'src/components/**/*.html',
+			'src/components/**/*.cw',
+		])
 		.pipe(
 			access({
 				force: true,
 			})
 		)
-		.on('error', function (err) {
+		.on('error', function(err) {
 			gutil.log(gutil.colors.red('[Error]'), err.toString());
 		})
 		.on('error', console.log)
@@ -169,7 +199,7 @@ gulp.task('test', async function () {
  * @param []
  * @function [js]
  */
-gulp.task('js-compile', async function () {
+gulp.task('js-compile', async function() {
 	await gulp
 		.src('src/scripts/*.js')
 		.pipe(
@@ -179,7 +209,7 @@ gulp.task('js-compile', async function () {
 			})
 		)
 		.pipe(uglify())
-		.on('error', function (err) {
+		.on('error', function(err) {
 			gutil.log(gutil.colors.red('[Error]'), err.toString());
 		})
 		.pipe(gulp.dest('dist/scripts'))
